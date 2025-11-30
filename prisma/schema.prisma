@@ -5,10 +5,31 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model MoodEntry {
+  id        Int      @id @default(autoincrement()) // Unique ID for each mood entry (primary key).
+  mood      String   // Mood selected by the user, e.g. "Happy", "Sad".
+  emotions  String   // User's emotions, e.g. "calm, grateful, relaxed".
+  notes     String?  // optional personal reflections added by the user.
+  createdAt DateTime @default(now()) // Timestamp.
+
+  // Foreign key
+  userId    Int
+  // Relation to User
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id       Int         @id @default(autoincrement()) // Unique ID for each user (primary key).
+  email    String      @unique // Unique login email.
+  password String // Password.
+  moods    MoodEntry[] // User's mood entries.
 }
