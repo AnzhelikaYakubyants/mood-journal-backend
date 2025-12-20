@@ -80,7 +80,7 @@ app.post('/login', async (req, res) => { // Handles user login.
 
     // Returns error if password is invalid.
     if (!isPwValid) {
-      return res.status(401).json({ error: 'Invalid password!' })
+      return res.status(401).json({ error: 'Wrong password!' })
     }
 
     // Creates a JWT token.
@@ -189,7 +189,7 @@ app.post('/moods', authMiddleware, async (req, res) => {
     // Creates a new mood entry in the database.
     const entry = await prisma.moodEntry.create({
       data: {
-        mood: mood.trim(), // Stores the provided mood value.
+        mood: mood, // Stores the selected mood value.
         emotions: typeof emotions === 'string' ? emotions.trim() : '', // Stores the provided emotions.
         notes: notes?.trim() || null, // Stores notes or null if none are provided.
         userId, // Links the entry to the authenticated user.
@@ -232,7 +232,7 @@ app.put('/moods/:id', authMiddleware, async (req, res) => {
     const updated = await prisma.moodEntry.update({
       where: { id: moodId },
       data: {
-        mood: mood.trim(), // Stores the updated mood value.
+        mood: mood, // Stores the updated mood value.
         emotions: typeof emotions === 'string' ? emotions.trim() : '', // Stores the updated emotions.
         notes: notes?.trim() || null, // Stores updated notes or null if none are provided.
       },
